@@ -1,5 +1,6 @@
 using Firebase;
 using Firebase.Extensions;
+using Firebase.Firestore;
 using UnityEngine;
 
 public class AppInitializer : MonoBehaviour
@@ -8,22 +9,28 @@ public class AppInitializer : MonoBehaviour
     [SerializeField] private GameObject[] gameObjectToHideArray;
 
     public FirebaseApp App { get; private set; }
+    public FirebaseFirestore Database { get; private set; }
 
     private void Awake()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available)
+            DependencyStatus dependencyStatus = task.Result;
+            if (dependencyStatus != DependencyStatus.Available)
             {
-                App = FirebaseApp.DefaultInstance;
-            }
-            else
-            {
-                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}!");
+                Debug.LogError($"Error: Could not resolve all Firebase dependencies {dependencyStatus}!");
                 return;
             }
+
+            App = FirebaseApp.DefaultInstance;
         });
+
+        Database = FirebaseFirestore.DefaultInstance;
+        if (Database == null)
+        {
+            Debug.LogError("Error: Could not find a valid instance of Firestore database!");
+            return;
+        }
 
         SetActiveAllGameObjects();
     }
