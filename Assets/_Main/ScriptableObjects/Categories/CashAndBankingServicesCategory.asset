@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff1ce5fcefb5ea84ca5f941f4086013b, type: 3}
+  m_Name: CashAndBankingServicesCategory
+  m_EditorClassIdentifier: 
+  Name: Contanti e servizi bancari
+  subCategory: {fileID: 11400000, guid: eb28dec293d83e849b52344eb49f9809, type: 2}
