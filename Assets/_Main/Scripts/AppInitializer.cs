@@ -1,3 +1,5 @@
+using Firebase;
+using Firebase.Extensions;
 using UnityEngine;
 
 public class AppInitializer : MonoBehaviour
@@ -5,8 +7,24 @@ public class AppInitializer : MonoBehaviour
     [SerializeField] private GameObject[] gameObjectToShowArray;
     [SerializeField] private GameObject[] gameObjectToHideArray;
 
+    public FirebaseApp App { get; private set; }
+
     private void Awake()
     {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == Firebase.DependencyStatus.Available)
+            {
+                App = FirebaseApp.DefaultInstance;
+            }
+            else
+            {
+                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}!");
+                return;
+            }
+        });
+
         SetActiveAllGameObjects();
     }
 
