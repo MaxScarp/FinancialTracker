@@ -6,11 +6,16 @@ using UnityEngine;
 public class FirestoreFirstTest : MonoBehaviour
 {
     [SerializeField] private AppInitializer appInitializer;
+    
+    [SerializeField] private bool isDebugMode;
 
     private void Start()
     {
-        AddData();
-        ReadData();
+        if (isDebugMode)
+        {
+            AddData();
+            ReadData();
+        }
     }
 
     private void ReadData()

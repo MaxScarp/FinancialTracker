@@ -1,4 +1,5 @@
 using Firebase;
+using Firebase.Auth;
 using Firebase.Extensions;
 using Firebase.Firestore;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class AppInitializer : MonoBehaviour
 
     public FirebaseApp App { get; private set; }
     public FirebaseFirestore Database { get; private set; }
+    public FirebaseAuth Auth { get; private set; }
 
     private void Awake()
     {
@@ -29,6 +31,13 @@ public class AppInitializer : MonoBehaviour
         if (Database == null)
         {
             Debug.LogError("Error: Could not find a valid instance of Firestore database!");
+            return;
+        }
+
+        Auth = FirebaseAuth.DefaultInstance;
+        if (Database == null)
+        {
+            Debug.LogError("Error: Could not find a valid instance of Firebase auth!");
             return;
         }
 
