@@ -18,6 +18,12 @@ public class FirestoreFirstTest : MonoBehaviour
         CollectionReference usersCollectionReference = appInitializer.Database.Collection("users");
         usersCollectionReference.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
+            if (!task.IsCompletedSuccessfully)
+            {
+                Debug.LogError($"{name} - {nameof(ReadData)} - {task.Exception.Message}");
+                return;
+            }
+
             QuerySnapshot snapshot = task.Result;
             foreach (DocumentSnapshot documentSnapshot in snapshot.Documents)
             {
@@ -49,6 +55,12 @@ public class FirestoreFirstTest : MonoBehaviour
         };
         documentReference.SetAsync(firstUser).ContinueWithOnMainThread(task =>
         {
+            if (!task.IsCompletedSuccessfully)
+            {
+                Debug.LogError($"{name} - {nameof(AddData)} - {task.Exception.Message}");
+                return;
+            }
+
             Debug.Log("Added data to the alovelace document in the users collection");
         });
 
@@ -62,6 +74,12 @@ public class FirestoreFirstTest : MonoBehaviour
         };
         documentReference.SetAsync(secondUser).ContinueWithOnMainThread(task =>
         {
+            if (!task.IsCompletedSuccessfully)
+            {
+                Debug.LogError($"{name} - {nameof(AddData)} - {task.Exception.Message}");
+                return;
+            }
+
             Debug.Log("Added data to the aturing document in the users collection");
         });
     }
