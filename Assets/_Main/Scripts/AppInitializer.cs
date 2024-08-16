@@ -1,5 +1,4 @@
 using Firebase;
-using Firebase.Auth;
 using Firebase.Extensions;
 using Firebase.Firestore;
 using UnityEngine;
@@ -9,9 +8,10 @@ public class AppInitializer : MonoBehaviour
     [SerializeField] private GameObject[] gameObjectToShowArray;
     [SerializeField] private GameObject[] gameObjectToHideArray;
 
+    [SerializeField] private GameObject[] gameObjectToStayOnTopArray;
+
     public FirebaseApp App { get; private set; }
     public FirebaseFirestore Database { get; private set; }
-    public FirebaseAuth Auth { get; private set; }
 
     private void Awake()
     {
@@ -34,12 +34,7 @@ public class AppInitializer : MonoBehaviour
             return;
         }
 
-        Auth = FirebaseAuth.DefaultInstance;
-        if (Database == null)
-        {
-            Debug.LogError("Error: Could not find a valid instance of Firebase auth!");
-            return;
-        }
+        Authenticator.Init();
 
         SetActiveAllGameObjects();
     }
@@ -47,6 +42,11 @@ public class AppInitializer : MonoBehaviour
     private void Start()
     {
         HideOrShowGameObjects();
+
+        foreach (GameObject gameObject in gameObjectToStayOnTopArray)
+        {
+            gameObject.transform.SetAsLastSibling();
+        }
     }
 
     private void SetActiveAllGameObjects()

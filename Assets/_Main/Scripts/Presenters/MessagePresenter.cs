@@ -17,15 +17,17 @@ public class MessagePresenter : MonoBehaviour
         });
     }
 
-    public void Show(string message, Color messageColor)
+    public void Show(string message, Color messageColor, bool isOkButtonDisabled = false)
     {
         messageBoxGameObject.SetActive(true);
 
         messageText.text = message;
         messageText.color = messageColor;
+
+        okButton.enabled = !isOkButtonDisabled;
     }
 
-    private void Hide()
+    public void Hide()
     {
         messageText.text = string.Empty;
         messageText.color = Color.white;
