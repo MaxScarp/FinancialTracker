@@ -23,16 +23,17 @@ public static class Authenticator
             return;
         }
 
+        if (Auth.CurrentUser != null)
+        {
+            User = Auth.CurrentUser;
+        }
+
         Auth.StateChanged += Auth_StateChanged;
     }
 
     private static void Auth_StateChanged(object sender, EventArgs e)
     {
         if (Auth.CurrentUser == null)
-        {
-            return;
-        }
-        if (Auth.CurrentUser == User)
         {
             return;
         }
@@ -61,16 +62,18 @@ public static class Authenticator
 
     public static async Task<UserResult> LoginUser(string email, string password)
     {
-        //TODO
-        //if (!Auth.CurrentUser.IsEmailVerified)
-        //{
-        //    return new UserResult { Result = null, ErrorMessage = "Your email has not been verified yet, please check your email." };
-        //}
-
         try
         {
             Credential credential = EmailAuthProvider.GetCredential(email, password);
             AuthResult authResult = await Auth.SignInAndRetrieveDataWithCredentialAsync(credential);
+
+            if (!User.IsEmailVerified)
+            {
+                LogoutUser();
+
+                return new UserResult { Result = null, ErrorMessage = "Your email has not been verified yet, please check your email." };
+            }
+
             return new UserResult { Result = authResult, ErrorMessage = string.Empty };
         }
         catch (Exception authError)
@@ -85,6 +88,7 @@ public static class Authenticator
         {
             Credential credential = EmailAuthProvider.GetCredential(email, password);
             AuthResult authResult = await User.ReauthenticateAndRetrieveDataAsync(credential);
+
             return new UserResult { Result = authResult, ErrorMessage = string.Empty };
         }
         catch (Exception authError)

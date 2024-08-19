@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +19,7 @@ public class MessageConfirmPresenter : MonoBehaviour
     {
         confirmButton.onClick.AddListener(() =>
         {
-            Login();
+            LoginAndDelete();
         });
         backButton.onClick.AddListener(() =>
         {
@@ -26,7 +27,24 @@ public class MessageConfirmPresenter : MonoBehaviour
         });
     }
 
-    private async void Login()
+    private async Task<bool> DeleteUser()
+    {
+        string errorMessage = await Authenticator.DeleteUser();
+        if (!string.IsNullOrEmpty(errorMessage))
+        {
+            messagePresenter.Show($"{errorMessage}", Color.red);
+            return false;
+        }
+
+        authMenuPresenter.Show();
+        Hide();
+
+        messagePresenter.Show($"User deleted succesfully", Color.green);
+
+        return true;
+    }
+
+    private async void LoginAndDelete()
     {
         Authenticator.UserResult reLoginUser = await Authenticator.ReLoginUser(Authenticator.User.Email, passwordInputField.text);
         if (reLoginUser.Result == null)
@@ -41,19 +59,10 @@ public class MessageConfirmPresenter : MonoBehaviour
             return;
         }
 
-        string errorMessage = await Authenticator.DeleteUser();
-        if (!string.IsNullOrEmpty(errorMessage))
+        if (await DeleteUser())
         {
-            messagePresenter.Show($"{errorMessage}", Color.red);
-            return;
+            Authenticator.LogoutUser();
         }
-
-        Authenticator.LogoutUser();
-
-        authMenuPresenter.Show();
-        Hide();
-
-        messagePresenter.Show($"User deleted succesfully", Color.green);
     }
 
     public void Show(string message)
@@ -67,6 +76,8 @@ public class MessageConfirmPresenter : MonoBehaviour
     {
         messageText.text = string.Empty;
         messageText.color = Color.white;
+
+        passwordInputField.text = string.Empty;
 
         messageBoxConfirmGameObject.SetActive(false);
     }

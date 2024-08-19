@@ -1,5 +1,5 @@
+using Firebase.Firestore;
 using System;
-using UnityEngine;
 
 public class Outcome
 {
@@ -9,20 +9,21 @@ public class Outcome
     private CategorySO category;
     private int subCategoryIndex;
 
+    public Outcome()
+    {
+        money = -1.0f;
+        category = null;
+        subCategoryIndex = -1;
+    }
+
     public void SetMoney(float money)
     {
         this.money = money;
-
-        //DEBUG
-        Debug.Log($"Money: {this.money}");
     }
 
     public void SetCategory(CategorySO category)
     {
         this.category = category;
-
-        //DEBUG
-        Debug.Log($"Category: {this.category.Name}");
 
         OnCategoryChanged?.Invoke(this, this.category);
     }
@@ -30,8 +31,25 @@ public class Outcome
     public void SetSubCateogryIndex(int subCategoryIndex)
     {
         this.subCategoryIndex = subCategoryIndex;
+    }
 
-        //DEBUG
-        Debug.Log($"SubCategoryName: {category.subCategory.SubcategoryArray[this.subCategoryIndex]}");
+    public OutcomeDatabase GenerateDataForDatabase()
+    {
+        OutcomeDatabase data = new OutcomeDatabase
+        {
+            ServerTimestamp = FieldValue.ServerTimestamp,
+            Email = Authenticator.User.Email,
+            MacroCategory = category.CategoryType,
+            Category = category.Name,
+            SubCategory = category.subCategory.SubcategoryArray[subCategoryIndex],
+            Money = money
+        };
+
+        return data;
+    }
+
+    public bool IsReadyToGenerateData()
+    {
+        return money > 0.0f && category != null && subCategoryIndex >= 0;
     }
 }

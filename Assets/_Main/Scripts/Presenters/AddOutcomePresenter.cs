@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OutcomePresenter : MonoBehaviour
+public class AddOutcomePresenter : MonoBehaviour
 {
     public event EventHandler OnBackButtonSelected;
 
@@ -37,8 +37,21 @@ public class OutcomePresenter : MonoBehaviour
 
     private void Start()
     {
-        addButton.onClick.AddListener(() =>
+        addButton.onClick.AddListener(async () =>
         {
+            if (!outcome.IsReadyToGenerateData())
+            {
+                messagePresenter.Show("Outcome cannot be generated, some data is missing!", Color.red);
+                return;
+            }
+
+            string errorString = await Database.AddOutcome(outcome.GenerateDataForDatabase());
+            if (!string.IsNullOrEmpty(errorString))
+            {
+                messagePresenter.Show(errorString, Color.red);
+                return;
+            }
+
             messagePresenter.Show("Outcome added succesfully", Color.green);
         });
         backButton.onClick.AddListener(() =>

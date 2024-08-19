@@ -10,20 +10,30 @@ public class AuthMenuPresenter : MonoBehaviour
 
     [SerializeField] private MessagePresenter messagePresenter;
 
-    private void Start()
+    public void Show()
     {
+        authMenuGameObject.SetActive(true);
+
+        authMainPanelPresenter.Show();
+
         authMainPanelPresenter.OnRegisterButtonPressed += AuthMainPanelPresenter_OnRegisterButtonPressed;
         authMainPanelPresenter.OnLoginButtonPressed += AuthMainPanelPresenter_OnLoginButtonPressed;
         authRegisterLoginPanelPresenter.OnBackButtonPressed += AuthRegisterLoginPanelPresenter_OnBackButtonPressed;
         authRegisterLoginPanelPresenter.OnRegister += AuthRegisterLoginPanelPresenter_OnRegister;
         authRegisterLoginPanelPresenter.OnLogin += AuthRegisterLoginPanelPresenter_OnLogin;
+
+        authRegisterLoginPanelPresenter.Hide();
     }
 
-    public void Show()
+    private void Hide()
     {
-        authMenuGameObject.SetActive(true);
-        authMainPanelPresenter.Show();
-        authRegisterLoginPanelPresenter.Hide();
+        authMainPanelPresenter.OnRegisterButtonPressed -= AuthMainPanelPresenter_OnRegisterButtonPressed;
+        authMainPanelPresenter.OnLoginButtonPressed -= AuthMainPanelPresenter_OnLoginButtonPressed;
+        authRegisterLoginPanelPresenter.OnBackButtonPressed -= AuthRegisterLoginPanelPresenter_OnBackButtonPressed;
+        authRegisterLoginPanelPresenter.OnRegister -= AuthRegisterLoginPanelPresenter_OnRegister;
+        authRegisterLoginPanelPresenter.OnLogin -= AuthRegisterLoginPanelPresenter_OnLogin;
+
+        authMenuGameObject.SetActive(false);
     }
 
     private async Task<bool> LoginUser(AuthRegisterLoginPanelPresenter.UserCredentialsEventArgs userCredentials)
@@ -54,7 +64,8 @@ public class AuthMenuPresenter : MonoBehaviour
         if (await LoginUser(userCredentials))
         {
             messagePresenter.Hide();
-            authMenuGameObject.SetActive(false);
+
+            Hide();
         }
     }
 
