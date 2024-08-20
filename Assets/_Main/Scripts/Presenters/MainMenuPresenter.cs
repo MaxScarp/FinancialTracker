@@ -47,6 +47,9 @@ public class MainMenuPresenter : MonoBehaviour
             Authenticator.LogoutUser();
             authMenuPresenter.Show();
         });
+
+        addOutcomePresenter.OnBackButtonSelected += OutcomePresenter_OnBackButtonSelected;
+        deleteOutcomePresenter.OnBackButtonSelected += DeleteOutcomePresenter_OnBackButtonSelected;
     }
 
     private void MessageYesNoPresenter_OnYesButtonSelected(object sender, EventArgs e)
@@ -72,15 +75,11 @@ public class MainMenuPresenter : MonoBehaviour
     {
         mainMenuGameObject.SetActive(true);
 
-        addOutcomePresenter.OnBackButtonSelected += OutcomePresenter_OnBackButtonSelected;
-        deleteOutcomePresenter.OnBackButtonSelected += DeleteOutcomePresenter_OnBackButtonSelected;
         messageYesNoPresenter.OnYesButtonSelected += MessageYesNoPresenter_OnYesButtonSelected;
     }
 
     private void Hide()
     {
-        addOutcomePresenter.OnBackButtonSelected -= OutcomePresenter_OnBackButtonSelected;
-        deleteOutcomePresenter.OnBackButtonSelected -= DeleteOutcomePresenter_OnBackButtonSelected;
         messageYesNoPresenter.OnYesButtonSelected -= MessageYesNoPresenter_OnYesButtonSelected;
 
         mainMenuGameObject.SetActive(false);
