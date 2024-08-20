@@ -1,4 +1,4 @@
-public static class Analytics
+public static class FireAnalytics
 {
     public static void Log()
     {

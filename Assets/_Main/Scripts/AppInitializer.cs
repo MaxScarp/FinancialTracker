@@ -1,4 +1,5 @@
 using Firebase;
+using Firebase.Crashlytics;
 using Firebase.Extensions;
 using UnityEngine;
 
@@ -21,6 +22,9 @@ public class AppInitializer : MonoBehaviour
             if (dependencyStatus != DependencyStatus.Available)
             {
                 Debug.LogError($"Error: Could not resolve all Firebase dependencies {dependencyStatus}!");
+
+                Crashlytics.ReportUncaughtExceptionsAsFatal = true;
+
                 return;
             }
 
@@ -42,10 +46,10 @@ public class AppInitializer : MonoBehaviour
             gameObject.transform.SetAsLastSibling();
         }
 
-        if (Authenticator.User != null)
-        {
-            authMenuGameObject.SetActive(false);
-        }
+        //TODO - Ricontrolla come gestire login e logout dalla documentazione firebase,
+        //       invia degli eventi ogni volta che l'utente si connette o disconnette e modifica una variabile booleana,
+        //       questa variabile salvala nel PlayerPref e poi usala ogni volta che apri la applicazione,
+        //       se l'utente ha eseguito un logout lo sai grazie a questa variabile, lo sai anche per il login eventuale.
     }
 
     private void SetActiveAllGameObjects()
